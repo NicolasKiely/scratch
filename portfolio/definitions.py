@@ -20,9 +20,17 @@ class TradeRecord:
     amount: float
 
 
+@dataclass
+class AssetBalance:
+    """ Represents balance amount of an asset """
+    asset_name: str
+    amount: float
+
+
 # Plural of data classes
 PortfolioAssetRecords = List[PortfolioAssetRecord]
 TradeRecords = List[TradeRecord]
+AssetBalances = List[AssetBalance]
 
 
 class PortfolioColumnName(Enum):
@@ -41,7 +49,18 @@ class ComputedTradeColumnName(Enum):
     AMOUNT = "amount"
 
 
+class AssetBalanceColumnName(Enum):
+    """ Name of asset balance data columns """
+    ASSET_NAME = "asset"
+    AMOUNT = "amount"
+
+
 class FileName(Enum):
     """ Default name of data files """
     PORTFOLIO_CSV = "data/portfolio.csv"
     COMPUTED_TRADES_CSV = "data/computed_trades.csv"
+    ASSET_BALANCES_CSV = "data/balances.csv"
+
+
+class ConfigException(Exception):
+    pass

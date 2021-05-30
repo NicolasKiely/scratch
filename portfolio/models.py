@@ -1,5 +1,7 @@
 import pandas
 
+from definitions import AssetBalanceColumnName
+from definitions import AssetBalances
 from definitions import FileName
 from definitions import PortfolioAssetRecord
 from definitions import PortfolioAssetRecords
@@ -60,3 +62,21 @@ def save_computed_trades(
     )
     trade_df.to_csv(data_path, index=False)
     return trade_df
+
+
+def save_asset_balances(
+        balances: AssetBalances,
+        data_path: str = FileName.ASSET_BALANCES_CSV.value
+) -> pandas.DataFrame:
+    """ Saves asset balances to data store """
+    balance_df: pandas.DataFrame = pandas.DataFrame.from_records(
+        [
+            {
+                AssetBalanceColumnName.ASSET_NAME.value: balance.asset_name,
+                AssetBalanceColumnName.AMOUNT.value: balance.amount
+            }
+            for balance in balances
+        ]
+    )
+    balance_df.to_csv(data_path, index=False)
+    return balance_df

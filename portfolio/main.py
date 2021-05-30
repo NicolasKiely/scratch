@@ -1,5 +1,8 @@
 import click
-import pandas
+import dotenv
+
+from definitions import ConfigException
+dotenv.load_dotenv(".env")
 
 
 @click.group()
@@ -14,6 +17,11 @@ def register_commands(root_group: click.Group):
         """ Trade commands """
         pass
 
+    @root_group.group(name="coinbase")
+    def coinbase_group():
+        """ Coinbase API commands """
+        pass
+
     @trade_group.command()
     def compute():
         """ Compute trades for portfolio """
@@ -25,7 +33,19 @@ def register_commands(root_group: click.Group):
         trade_df = models.save_computed_trades(trades)
         print(trade_df)
 
+    @coinbase_group.command()
+    def load_balance():
+        """ Fetch account balance from coinbase """
+        from coinbase_wrapper import CoinbaseAPI
+        import models
+        accounts = CoinbaseAPI.get_balances()
+        balance_df = models.save_asset_balances(accounts)
+        print(balance_df[balance_df["amount"] > 0])
+
 
 if __name__ == "__main__":
     register_commands(main)
-    main()
+    try:
+        main()
+    except ConfigException as ex:
+        print("Error: %s" % ex)
